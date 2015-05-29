@@ -27,13 +27,15 @@ from sqlalchemy.sql import compiler
 from sqlalchemy.sql import operators
 from sqlalchemy.engine import default
 from sqlalchemy import __version__ as SA_Version
+from sqlalchemy.util.compat import *
+
 from . import reflection as ibm_reflection
 
 from sqlalchemy.types import BLOB, CHAR, CLOB, DATE, DATETIME, INTEGER,\
     SMALLINT, BIGINT, DECIMAL, NUMERIC, REAL, TIME, TIMESTAMP,\
     VARCHAR, FLOAT
 
-SA_Version = [long(ver_token) for ver_token in SA_Version.split('.')[0:2]]
+SA_Version = [int(ver_token) for ver_token in SA_Version.split('.')[0:2]]
 
 # as documented from:
 # http://publib.boulder.ibm.com/infocenter/db2luw/v9/index.jsp?topic=/com.ibm.db2.udb.doc/admin/r0001095.htm
@@ -439,7 +441,7 @@ class DB2Compiler(compiler.SQLCompiler):
             return self.process(cast.clause)
 
     def get_select_precolumns(self, select):
-        if isinstance(select._distinct, basestring):
+        if isinstance(select._distinct, string_types):
             return select._distinct.upper() + " "
         elif select._distinct:
             return "DISTINCT "
@@ -605,7 +607,7 @@ class DB2DDLCompiler(compiler.DDLCompiler):
 class DB2IdentifierPreparer(compiler.IdentifierPreparer):
 
     reserved_words = RESERVED_WORDS
-    illegal_initial_characters = set(xrange(0, 10)).union(["_", "$"])
+    illegal_initial_characters = set(range(0, 10)).union(["_", "$"])
 
 
 class DB2ExecutionContext(default.DefaultExecutionContext):

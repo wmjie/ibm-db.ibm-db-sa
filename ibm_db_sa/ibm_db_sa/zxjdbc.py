@@ -30,6 +30,7 @@ from decimal import Decimal as _python_Decimal
 from sqlalchemy import sql, util
 from sqlalchemy import types as sa_types
 from sqlalchemy.connectors.zxJDBC import ZxJDBCConnector
+from sqlalchemy.util.compat import *
 from .base import _SelectLastRowIDMixin, DB2Dialect, DB2ExecutionContext, DB2Compiler
 from . import reflection as ibm_reflection
 
@@ -69,9 +70,7 @@ class DB2Dialect_zxjdbc(ZxJDBCConnector, DB2Dialect):
 
             def setJDBCObject(self, statement, index, object, dbtype=None):
                 if dbtype is None:
-                    if (isinstance(object, int)):
-                        statement.setObject(index, str(object), java_Types.INTEGER)
-                    elif (isinstance(object, long)):
+                    if (isinstance(object, int_types)):
                         statement.setObject(index, str(object), java_Types.BIGINT)
                     elif (isinstance(object, _python_Decimal)):
                         statement.setObject(index, str(object), java_Types.DECIMAL)
@@ -89,7 +88,3 @@ class AS400Dialect_zxjdbc(DB2Dialect_zxjdbc):
     jdbc_driver_name = 'com.ibm.as400.access.AS400JDBCDriver'
 
     _reflector_cls = ibm_reflection.AS400Reflector
-
-
-
-

@@ -20,7 +20,7 @@
 from .base import DB2ExecutionContext, DB2Dialect
 from sqlalchemy import processors, types as sa_types, util
 from sqlalchemy import __version__ as SA_Version
-SA_Version = [long(ver_token) for ver_token in SA_Version.split('.')[0:2]]
+SA_Version = [int(ver_token) for ver_token in SA_Version.split('.')[0:2]]
 
 if SA_Version < [0, 8]:
     from sqlalchemy.engine import base

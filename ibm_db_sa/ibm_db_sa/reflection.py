@@ -21,6 +21,7 @@ from sqlalchemy import types as sa_types
 from sqlalchemy import sql, util
 from sqlalchemy import Table, MetaData, Column
 from sqlalchemy.engine import reflection
+from sqlalchemy.util.compat import *
 import re
 
 
@@ -29,7 +30,7 @@ class CoerceUnicode(sa_types.TypeDecorator):
     impl = sa_types.Unicode
 
     def process_bind_param(self, value, dialect):
-        if isinstance(value, str):
+        if isinstance(value, binary_type):
             value = value.decode(dialect.encoding)
         return value
 
@@ -40,7 +41,7 @@ class BaseReflector(object):
         self.identifier_preparer = dialect.identifier_preparer
 
     def normalize_name(self, name):
-        if isinstance(name, str):
+        if isinstance(name, binary_type):
             name = name.decode(self.dialect.encoding)
         if name != None:
             return name.lower() if name.upper() == name and \
@@ -57,16 +58,16 @@ class BaseReflector(object):
         if not self.dialect.supports_unicode_binds:
             name = name.encode(self.dialect.encoding)
         else:
-            name = unicode(name)
+            name = u(name)
         return name
 
     def _get_default_schema_name(self, connection):
         """Return: current setting of the schema attribute"""
         default_schema_name = connection.execute(
-                    u'SELECT CURRENT_SCHEMA FROM SYSIBM.SYSDUMMY1').scalar()
-        if isinstance(default_schema_name, str):
+                    u('SELECT CURRENT_SCHEMA FROM SYSIBM.SYSDUMMY1')).scalar()
+        if isinstance(default_schema_name, binary_type):
             default_schema_name = default_schema_name.strip()
-        elif isinstance(default_schema_name, unicode):
+        elif isinstance(default_schema_name, text_type):
             default_schema_name = default_schema_name.strip().__str__()
         return self.normalize_name(default_schema_name)
 
@@ -301,7 +302,7 @@ class DB2Reflector(BaseReflector):
 
         fschema = {}
         for r in connection.execute(query):
-            if not fschema.has_key(r[0]):
+            if r[0] not in fschema:
                 referred_schema = self.normalize_name(r[5])
 
                 # if no schema specified and referred schema here is the
@@ -319,7 +320,7 @@ class DB2Reflector(BaseReflector):
             else:
                 fschema[r[0]]['constrained_columns'].append(self.normalize_name(r[3]))
                 fschema[r[0]]['referred_columns'].append(self.normalize_name(r[7]))
-        return [value for key, value in fschema.iteritems()]
+        return [value for key, value in fschema.items()]
     
     @reflection.cache
     def get_incoming_foreign_keys(self, connection, table_name, schema=None, **kw):
@@ -341,7 +342,7 @@ class DB2Reflector(BaseReflector):
 
         fschema = {}
         for r in connection.execute(query):
-            if not fschema.has_key(r[0]):
+            if r[0] not in fschema:
                 constrained_schema = self.normalize_name(r[1])
 
                 # if no schema specified and referred schema here is the
@@ -361,7 +362,7 @@ class DB2Reflector(BaseReflector):
             else:
                 fschema[r[0]]['constrained_columns'].append(self.normalize_name(r[3]))
                 fschema[r[0]]['referred_columns'].append(self.normalize_name(r[7]))
-        return [value for key, value in fschema.iteritems()]
+        return [value for key, value in fschema.items()]
 
 
     @reflection.cache
@@ -657,7 +658,7 @@ class AS400Reflector(BaseReflector):
             )
         fschema = {}
         for r in connection.execute(query):
-            if not fschema.has_key(r[0]):
+            if r[0] not in fschema:
                 referred_schema = self.normalize_name(r[5])
 
                 # if no schema specified and referred schema here is the
@@ -674,7 +675,7 @@ class AS400Reflector(BaseReflector):
             else:
                 fschema[r[0]]['constrained_columns'].append(self.normalize_name(r[3]))
                 fschema[r[0]]['referred_columns'].append(self.normalize_name(r[7]))
-        return [value for key, value in fschema.iteritems()]
+        return [value for key, value in fschema.items()]
 
     # Retrieves a list of index names for a given schema
     @reflection.cache
@@ -704,4 +705,4 @@ class AS400Reflector(BaseReflector):
                                 'column_names': [self.normalize_name(r[2])],
                                 'unique': r[1] == 'Y'
                         }
-        return [value for key, value in indexes.iteritems()]
+        return [value for key, value in indexes.items()]
