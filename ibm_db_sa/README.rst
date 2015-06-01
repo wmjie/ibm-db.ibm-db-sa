@@ -5,36 +5,17 @@ The IBM_DB_SA adapter provides the Python/SQLAlchemy interface to IBM Data Serve
 
 Version
 --------
-0.3.2 (2014/10/20)
+3.3.2 (2015/05/31)
 
 Prerequisites
 --------------
-1. Python 2.5.x or Jython 2.5.x .
+1. Python2.7 or Python3.4
 2. SQLAlchemy o.7.3 or above.
 3. IBM_DB driver and IBM_DB_DBI wrapper 1.0.1 or higher
 
 Install and Configuration
 =========================
-The IBM_DB_SA Python Egg component (.egg) can be installed using the standard setuptools provided by the Python Easy Install through Python Entreprise 
-Application Kit community portal:
-  http://peak.telecommunity.com/DevCenter/EasyInstall
-
-Please follow the steps provided to Install "Easy Install" in the link above and follow up with these additional steps to install IBM_DB_SA:
-
-  1. To install IBM_DB_SA egg component available in the remote repositories
-  (pypi.python.org):
-    Windows:
-      > easy_install ibm_db_sa
-    Linux/Unix:
-      $ sudo easy_install ibm_db_sa
-  
-  2. To install IBM_DB_SA egg component from the downloaded .egg file
-    Windows:
-      > easy_install ibm_db_sa-x.x.x-pyx.x.egg
-    Linux/Unix:
-      $ sudo easy_install ibm_db_sa-x.x.x-pyx.x.egg
-  
-  3. To install IBM_DB_SA from source
+  1. To install IBM_DB_SA from source
     Standard Python setup should be used::
         python setup.py install
 
@@ -68,7 +49,7 @@ Known Limitations in ibm_db_sa adapter for DB2 databases
 
 Not Supported / Not Tested
 ---------------------------
-- Python 3 has not yet been tested.
+- Python 3 has will test
 
 Credits
 -------
